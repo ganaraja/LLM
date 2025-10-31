@@ -1,0 +1,8 @@
+README.md
+pyproject.toml
+src/chunking_strategy.egg-info/PKG-INFO
+src/chunking_strategy.egg-info/SOURCES.txt
+src/chunking_strategy.egg-info/dependency_links.txt
+src/chunking_strategy.egg-info/requires.txt
+src/chunking_strategy.egg-info/top_level.txt
+src/svlearn_cs/__init__.py

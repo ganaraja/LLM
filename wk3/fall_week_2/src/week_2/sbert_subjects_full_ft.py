@@ -1,0 +1,114 @@
+#  ------------------------------------------------------------------------------------------------------------
+#   Copyright (c) 2024.  SupportVectors AI Lab
+#   This code is part of the training material, and therefore part of the intellectual property.
+#   It may not be reused or shared without the explicit, written permission of SupportVectors.
+#
+#   Use is limited to the duration and purpose of the training at SupportVectors.
+#
+#   Author: SupportVectors AI Training Team
+#  -------------------------------------------------------------------------------------------------------------
+
+import time
+import torch
+from sentence_transformers import (SentenceTransformer, 
+                                   SentenceTransformerTrainer, 
+                                   SentenceTransformerTrainingArguments, 
+                                   losses)
+
+from week_2 import config
+from week_2.hf_text_utils import (
+    get_train_test_lists, 
+    tuples_list_to_dataset, 
+    sampled_dataset, 
+    convert_to_pair_dataset, 
+    get_evaluator
+)
+
+if __name__ == "__main__":
+    # Determine the device to use for training (MPS, CUDA, or CPU)
+    device = "mps" if torch.backends.mps.is_available() else "cpu"
+    device = "cuda" if torch.cuda.is_available() else device
+
+    # Load the pre-trained sentence transformer model
+    model_name = 'BAAI/bge-base-en-v1.5'
+    model = SentenceTransformer(model_name).to(device)
+    
+    # Retrieve training and testing data labeled with subjects
+    train, test = get_train_test_lists(cfg=config)
+    
+    # Convert the data to Hugging Face Dataset format
+    train_dataset = tuples_list_to_dataset(train)
+    test_dataset = tuples_list_to_dataset(test)
+    
+    # Sample the datasets to a maximum of 500 samples per label
+    train_dataset = sampled_dataset(train_dataset)
+    test_dataset = sampled_dataset(test_dataset)
+
+    # Create paired datasets for training and testing
+    train_dataset = convert_to_pair_dataset(train_dataset)
+    test_dataset = convert_to_pair_dataset(test_dataset)
+
+    # Define the loss function for training
+    loss = losses.CoSENTLoss(model)
+    
+    # Set training arguments based on the device
+    use_cpu = False
+    no_cuda = False
+    if device == "cpu":
+        use_cpu = True
+        no_cuda = True
+
+    # Define the directory to save training results
+    results_dir = config["paths"]["results_dir"]
+    results_sub_dir = config["paths"]["results_sub_dir"]
+    training_args = SentenceTransformerTrainingArguments(
+        output_dir=f"{results_dir}/{results_sub_dir}",
+        no_cuda=no_cuda, 
+        use_cpu=use_cpu,
+        max_steps=2000,
+        learning_rate=2e-5,
+        per_device_train_batch_size=16,
+        per_device_eval_batch_size=32,
+        save_strategy="steps",
+        weight_decay=0.01,
+        metric_for_best_model="cosine_accuracy",
+        greater_is_better=True, 
+        save_total_limit=1,  # Keep only the best model checkpoint    
+        report_to="none",         
+    )
+
+    # Initialize the evaluator for the test dataset
+    binary_acc_evaluator = get_evaluator(test_dataset=test_dataset)
+
+    # Set up the trainer with the model, training arguments, dataset, and loss function
+    trainer = SentenceTransformerTrainer(
+        model=model,                         
+        args=training_args,                  
+        train_dataset=train_dataset,                
+        loss=loss,                 
+    )
+
+    # Evaluate the model before training
+    result = binary_acc_evaluator(model)
+    print(f"Before training evaluation: {result}")
+    
+    start_time = time.time()
+
+    # Train the model
+    trainer.train()
+
+    end_time = time.time()
+
+    # Evaluate the model after training
+    result = binary_acc_evaluator(model)
+    print(f"After training evaluation: {result}")
+    
+    # Calculate and print the total training time
+    training_time = end_time - start_time
+    hours = int(training_time // 3600)
+    minutes = int((training_time % 3600) // 60)
+    seconds = int(training_time % 60)
+
+    print(f"Training started at: {time.ctime(start_time)}")
+    print(f"Training ended at: {time.ctime(end_time)}")
+    print(f"Total training time: {hours} hours, {minutes} minutes, {seconds} seconds")
