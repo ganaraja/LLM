@@ -1,0 +1,4 @@
+datasets>=3.4.1
+evaluate>=0.4.3
+svlearn-bootcamp>=0.1.7
+transformers[torch]>=4.50.0

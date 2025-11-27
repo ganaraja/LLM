@@ -1,0 +1,11 @@
+README.md
+pyproject.toml
+src/hello.py
+src/dspy_poc.egg-info/PKG-INFO
+src/dspy_poc.egg-info/SOURCES.txt
+src/dspy_poc.egg-info/dependency_links.txt
+src/dspy_poc.egg-info/requires.txt
+src/dspy_poc.egg-info/top_level.txt
+src/svlearn_dspy/__init__.py
+src/svlearn_dspy/dspy_mcp.py
+src/svlearn_dspy/mcp_server.py

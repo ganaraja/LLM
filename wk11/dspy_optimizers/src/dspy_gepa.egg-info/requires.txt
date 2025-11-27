@@ -1,0 +1,4 @@
+datasets>=4.4.1
+dspy>=3.0.3
+sentence-transformers>=5.1.2
+svlearn-bootcamp>=0.1.7

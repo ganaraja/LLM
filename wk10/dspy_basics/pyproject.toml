@@ -1,0 +1,18 @@
+[project]
+name = "dspy-poc"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = "==3.12.*"
+dependencies = [
+    "dspy[mcp]>=3.0.4",
+    "fastmcp>=2.13.1",
+    "svlearn-bootcamp>=0.1.7",
+]
+
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

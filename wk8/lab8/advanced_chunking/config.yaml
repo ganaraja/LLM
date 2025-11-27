@@ -1,0 +1,25 @@
+#-------------------------------------------------------------------------------------------
+#  Copyright (c) 2016-2025.  SupportVectors AI Lab
+#
+#  This code is part of the training material, and therefore part of the intellectual property.
+#  It may not be reused or shared without the explicit, written permission of SupportVectors.
+#
+#  Use is limited to the duration and purpose of the training at SupportVectors.
+#
+#  Author: SupportVectors AI Training
+#-------------------------------------------------------------------------------------------
+
+cohort: Spring 2025
+
+abstractive_summarization:
+  model: gpt-5 #gpt-oss:20b #gpt-5
+  chunk_size: 20000
+  summary_size: 2000
+
+factoid_generation:
+  model: gpt-oss:20b 
+  chunk_size: 1000
+
+qa_generation:
+  model: gpt-oss:20b
+  chunk_size: 1000

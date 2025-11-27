@@ -1,0 +1,10 @@
+Metadata-Version: 2.4
+Name: vision-transformers-vs-cnn
+Version: 0.1.0
+Summary: Add your description here
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+Requires-Dist: datasets>=3.4.1
+Requires-Dist: evaluate>=0.4.3
+Requires-Dist: svlearn-bootcamp>=0.1.7
+Requires-Dist: transformers[torch]>=4.50.0
